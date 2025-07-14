@@ -1,4 +1,4 @@
-package com.example.cryptoapp.presentation
+package com.example.cryptoapp
 
 import android.app.Application
 import android.util.Log
