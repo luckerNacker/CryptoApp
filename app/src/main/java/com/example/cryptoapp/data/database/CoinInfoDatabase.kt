@@ -1,8 +1,13 @@
-package com.example.cryptoapp.domain.models
+package com.example.cryptoapp.data.database
 
-data class CoinInfDomain(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "full_price_list")
+data class CoinInfoDatabase(
     val type: String?,
     val market: String?,
+    @PrimaryKey
     val fromSymbol: String,
     val toSymbol: String?,
     val flags: String?,

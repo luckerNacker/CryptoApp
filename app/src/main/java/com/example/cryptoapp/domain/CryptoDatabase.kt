@@ -1,12 +1,13 @@
 package com.example.cryptoapp.domain
 
-import com.example.cryptoapp.data.pojo.CoinPriceInfo
+import androidx.lifecycle.LiveData
+import com.example.cryptoapp.domain.models.CoinInfDomain
 
 interface CryptoDatabase {
 
-    fun getTopCoinsInfo(): CoinInfoList
+    fun getPriceList(): LiveData<List<CoinInfDomain>>
 
-    fun getFullPriceList(): CoinInfoPriceList
+    fun getPriceInfoAboutCoin(fSym: String): LiveData<CoinInfDomain>
 
-    fun insertPriceList(priceList: List<CoinPriceInfo>)
+    fun insertPriceList(priceList: List<CoinInfDomain>)
 }

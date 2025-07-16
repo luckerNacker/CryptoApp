@@ -6,10 +6,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.cryptoapp.data.api.ApiFactory.getFullPriceList
 import com.example.cryptoapp.data.api.ApiFactory.getTopCoinsInfo
-import com.example.cryptoapp.data.database.AppDatabase
+import com.example.cryptoapp.data.database.DatabaseRepository
+import com.example.cryptoapp.data.mappers.mapDomainCoinInfToPRLV
+import com.example.cryptoapp.data.mappers.mapListCoinInfDomainToPRLV
 import com.example.cryptoapp.data.pojo.CoinPriceInfo
 import com.example.cryptoapp.data.pojo.CoinPriceInfoRawData
-import com.example.cryptoapp.domain.usecases.GetTopCoinsInfoUseCase
+import com.example.cryptoapp.domain.usecases.GetPriceInfoAboutCoinUseCase
+import com.example.cryptoapp.domain.usecases.GetPriceListUseCase
 import com.example.cryptoapp.domain.usecases.InsertPriceListUseCase
 import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
@@ -18,13 +21,18 @@ import java.util.concurrent.TimeUnit
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val db = AppDatabase.getInstance(application)
+    private val databaseRepository = DatabaseRepository(application)
     private val compositeDisposable = CompositeDisposable()
 
-    val priceList = db.coinPriceInfoDao().getPriceList()
+    val priceList =
+        mapListCoinInfDomainToPRLV(GetPriceListUseCase(databaseRepository).invoke())
 
     fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> {
-        return db.coinPriceInfoDao().getPriceInfoAboutCoin(fSym)
+        return mapDomainCoinInfToPRLV(
+            GetPriceInfoAboutCoinUseCase(databaseRepository).invoke(
+                fSym
+            )
+        )
     }
 
     init {
@@ -32,8 +40,6 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadData() {
-        val listInfo = GetTopCoinsInfoUseCase(db)
-
         val disposable = getTopCoinsInfo(limit = 50)
             .map { it.data?.map { it.coinInfo?.name }?.joinToString(",") }
             .flatMap { getFullPriceList(fSyms = it) }
@@ -43,7 +49,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
             .retry()
             .subscribeOn(Schedulers.io())
             .subscribe({
-                InsertPriceListUseCase(db).invoke(it)
+                InsertPriceListUseCase(databaseRepository)
                 Log.d("TEST_OF_LOADING_DATA", "Success: $it")
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "Failure: ${it.message}")

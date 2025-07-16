@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import com.example.cryptoapp.data.pojo.CoinPriceInfo
 import com.example.cryptoapp.domain.CryptoDatabase
 
-@Database(entities = [CoinPriceInfo::class], version = 1, exportSchema = false)
-abstract class AppDatabase : RoomDatabase(), CryptoDatabase {
+@Database(entities = [CoinInfoDatabase::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
     companion object {
 
         private var db: AppDatabase? = null

@@ -7,7 +7,6 @@ import com.example.cryptoapp.data.utils.convertTimestampToTime
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "full_price_list")
 data class CoinPriceInfo(
     @SerializedName("TYPE")
     @Expose
@@ -15,7 +14,6 @@ data class CoinPriceInfo(
     @SerializedName("MARKET")
     @Expose
     val market: String?,
-    @PrimaryKey
     @SerializedName("FROMSYMBOL")
     @Expose
     val fromSymbol: String,
