@@ -1,9 +1,10 @@
-package com.example.cryptoapp
+package com.example.cryptoapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cryptoapp.R
 import com.example.cryptoapp.data.adapters.CoinInfoAdapter
 import com.example.cryptoapp.data.pojo.CoinPriceInfo
 
