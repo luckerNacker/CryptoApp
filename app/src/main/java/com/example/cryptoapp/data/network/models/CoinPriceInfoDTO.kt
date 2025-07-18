@@ -1,12 +1,10 @@
-package com.example.cryptoapp.data.pojo
+package com.example.cryptoapp.data.network.models
 
-import com.example.cryptoapp.data.api.ApiFactory.BASE_IMAGE_URL
-import com.example.cryptoapp.data.utils.convertTimestampToTime
 import com.example.cryptoapp.domain.models.MapperModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class CoinPriceInfo(
+data class CoinPriceInfoDTO(
     @SerializedName("TYPE")
     @Expose
     override val type: String?,
@@ -124,12 +122,4 @@ data class CoinPriceInfo(
     @SerializedName("IMAGEURL")
     @Expose
     override val imageUrl: String?
-) : MapperModel {
-    fun getFormattedTime(): String {
-        return convertTimestampToTime(lastUpdate)
-    }
-
-    fun getFullImageUrl(): String {
-        return BASE_IMAGE_URL + imageUrl
-    }
-}
+) : MapperModel

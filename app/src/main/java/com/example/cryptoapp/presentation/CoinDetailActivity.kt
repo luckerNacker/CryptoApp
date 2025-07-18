@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.cryptoapp.data.database.mappers.convertTimestampToTime
 import com.example.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.squareup.picasso.Picasso
 
@@ -21,7 +22,7 @@ class CoinDetailActivity : AppCompatActivity() {
             finish()
             return
         }
-        val fromSymbol = intent.getStringExtra(EXTRA_FROM_SYMBOL) ?: ""
+        val fromSymbol = intent.getStringExtra(EXTRA_FROM_SYMBOL) ?: EMPTY_SYMBOL
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
 
         viewModel.getDetailInfo(fromSymbol).observe(this) {
@@ -29,15 +30,16 @@ class CoinDetailActivity : AppCompatActivity() {
             binding.tvMinPrice.text = it.lowDay
             binding.tvMaxPrice.text = it.highDay
             binding.tvLastMarket.text = it.lastMarket
-            binding.tvLastUpdate.text = it.getFormattedTime()
+            binding.tvLastUpdate.text = convertTimestampToTime(it.lastUpdate)
             binding.tvFromSymbol.text = it.fromSymbol
             binding.tvToSymbol.text = it.toSymbol
-            Picasso.get().load(it.getFullImageUrl()).into(binding.ivLogoCoin)
+            Picasso.get().load(it.imageUrl).into(binding.ivLogoCoin)
         }
     }
 
     companion object {
         private const val EXTRA_FROM_SYMBOL = "fSym"
+        private const val EMPTY_SYMBOL = ""
 
         fun newIntent(context: Context, fromSymbol: String): Intent {
             val intent = Intent(context, CoinDetailActivity::class.java)

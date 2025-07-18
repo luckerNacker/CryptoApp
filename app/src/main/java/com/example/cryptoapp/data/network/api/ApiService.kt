@@ -1,7 +1,7 @@
-package com.example.cryptoapp.data.api
+package com.example.cryptoapp.data.network.api
 
-import com.example.cryptoapp.data.pojo.CoinInfoListOfData
-import com.example.cryptoapp.data.pojo.CoinJson
+import com.example.cryptoapp.data.network.models.CoinInfoListOfData
+import com.example.cryptoapp.data.network.models.CoinJsonDTO
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -19,7 +19,7 @@ interface ApiService {
         @Query(QUERY_PARAM_API_KEY) apiKey: String = "",
         @Query(QUERY_PARAM_FROM_SYMBOLS) fSyms: String,
         @Query(QUERY_PARAM_TO_SYMBOLS) tSyms: String = CURRENCY
-    ): CoinJson
+    ): CoinJsonDTO
 
     companion object {
         private const val QUERY_PARAM_API_KEY = "api_key"

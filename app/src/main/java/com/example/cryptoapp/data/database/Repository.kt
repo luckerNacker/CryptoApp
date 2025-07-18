@@ -2,15 +2,15 @@ package com.example.cryptoapp.data.database
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import com.example.cryptoapp.data.api.ApiFactory.getJson
-import com.example.cryptoapp.data.api.ApiFactory.getTopCoinsInfo
-import com.example.cryptoapp.data.mappers.ClassNamesForMappers
-import com.example.cryptoapp.data.mappers.Mapping
-import com.example.cryptoapp.data.mappers.mapListModelLV
-import com.example.cryptoapp.data.mappers.mapModel
-import com.example.cryptoapp.data.mappers.mapModelToDomainLV
-import com.example.cryptoapp.data.pojo.CoinJson
-import com.example.cryptoapp.data.pojo.CoinPriceInfo
+import com.example.cryptoapp.data.network.api.ApiFactory.getJson
+import com.example.cryptoapp.data.network.api.ApiFactory.getTopCoinsInfo
+import com.example.cryptoapp.data.database.mappers.ClassNamesForMappers
+import com.example.cryptoapp.data.database.mappers.MappingResult
+import com.example.cryptoapp.data.database.mappers.mapListModelLV
+import com.example.cryptoapp.data.database.mappers.mapModel
+import com.example.cryptoapp.data.database.mappers.mapModelToDomainLV
+import com.example.cryptoapp.data.network.models.CoinJsonDTO
+import com.example.cryptoapp.data.network.models.CoinPriceInfoDTO
 import com.example.cryptoapp.domain.models.CoinInfDomainModel
 import com.example.cryptoapp.domain.models.CryptoRepository
 import com.google.gson.Gson
@@ -23,7 +23,7 @@ class Repository(application: Application) : CryptoRepository {
     override fun getPriceList(): LiveData<List<CoinInfDomainModel>> {
         val listData = database.getPriceList()
         val result =
-            mapListModelLV(listData, ClassNamesForMappers.DOMAIN) as Mapping.DomainListLV
+            mapListModelLV(listData, ClassNamesForMappers.DOMAIN) as MappingResult.DomainListLV
         return result.data
     }
 
@@ -32,25 +32,28 @@ class Repository(application: Application) : CryptoRepository {
         return mapModelToDomainLV(listData)
     }
 
-    override fun insertPriceList(priceList: List<CoinInfDomainModel>) {
+    override suspend fun insertPriceList(priceList: List<CoinInfDomainModel>) {
         val newList = priceList.map {
-            (mapModel(it, ClassNamesForMappers.DATA) as Mapping.DataModel).data
+            (mapModel(it, ClassNamesForMappers.DATA) as MappingResult.DataModel).data
         }
         database.insertPriceList(newList)
     }
 
     override suspend fun loadCoinInfoNet() {
         while (true) {
-            val disposable = getTopCoinsInfo(limit = 50)
-            val names = disposable.data?.map { it.coinsNameDTO?.name }?.joinToString(",") ?: ""
-            val json = getJson(names)
-            val fullPriceListDB = getPriceListFromJson(json).map {
-                (mapModel(
-                    it,
-                    ClassNamesForMappers.DATA
-                ) as Mapping.DataModel).data
+            try {
+                val disposable = getTopCoinsInfo(limit = 50)
+                val names = disposable.data?.map { it.coinsNameDTO?.name }?.joinToString(",") ?: ""
+                val json = getJson(names)
+                val fullPriceListDB = getPriceListFromJson(json).map {
+                    (mapModel(
+                        it,
+                        ClassNamesForMappers.DATA
+                    ) as MappingResult.DataModel).data
+                }
+                database.insertPriceList(fullPriceListDB)
+            } catch (e: Exception) {
             }
-            database.insertPriceList(fullPriceListDB)
             delay(10000)
         }
 
@@ -58,10 +61,10 @@ class Repository(application: Application) : CryptoRepository {
 
 
     private fun getPriceListFromJson(
-        coinJson: CoinJson
-    ): List<CoinPriceInfo> {
-        val result = ArrayList<CoinPriceInfo>()
-        val jsonObject = coinJson.coinPriceInfoJsonObject ?: return result
+        coinJsonDTO: CoinJsonDTO
+    ): List<CoinPriceInfoDTO> {
+        val result = ArrayList<CoinPriceInfoDTO>()
+        val jsonObject = coinJsonDTO.coinPriceInfoJsonObject ?: return result
         val coinKeySet = jsonObject.keySet()
         for (coinKey in coinKeySet) {
             val currencyJson = jsonObject.getAsJsonObject(coinKey)
@@ -69,7 +72,7 @@ class Repository(application: Application) : CryptoRepository {
             for (currencyKey in currencyKeySet) {
                 val priceInfo = Gson().fromJson(
                     currencyJson.getAsJsonObject(currencyKey),
-                    CoinPriceInfo::class.java
+                    CoinPriceInfoDTO::class.java
                 )
                 result.add(priceInfo)
             }

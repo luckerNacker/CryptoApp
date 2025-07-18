@@ -1,9 +1,9 @@
-package com.example.cryptoapp.data.api
+package com.example.cryptoapp.data.network.api
 
-import com.example.cryptoapp.data.pojo.CoinInfoListOfData
-import com.example.cryptoapp.data.pojo.CoinJson
+
+import com.example.cryptoapp.data.network.models.CoinInfoListOfData
+import com.example.cryptoapp.data.network.models.CoinJsonDTO
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiFactory {
@@ -13,7 +13,6 @@ object ApiFactory {
 
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .baseUrl(BASE_URL)
         .build()
 
@@ -21,7 +20,7 @@ object ApiFactory {
 
     suspend fun getJson(
         fSyms: String,
-    ): CoinJson {
+    ): CoinJsonDTO {
         return apiService.getFullPriceList(fSyms = fSyms)
     }
 
