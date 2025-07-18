@@ -27,6 +27,7 @@ class CoinPriceListActivity : AppCompatActivity() {
         }
         val rvCoinPriceList = findViewById<RecyclerView>(R.id.rvCoinPriceList)
         rvCoinPriceList.adapter = adapter
+        rvCoinPriceList.itemAnimator = null
         viewModel = ViewModelProvider(this)[CoinViewModel::class.java]
         viewModel.coinInfoList.observe(this) {
             adapter.submitList(it)
