@@ -10,5 +10,5 @@ interface CryptoRepository {
 
     suspend fun insertPriceList(priceList: List<CoinInfDomainModel>)
 
-    suspend fun loadCoinInfoNet()
+    fun loadCoinInfoNet()
 }
