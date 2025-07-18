@@ -1,131 +1,130 @@
 package com.example.cryptoapp.data.pojo
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.example.cryptoapp.data.api.ApiFactory.BASE_IMAGE_URL
 import com.example.cryptoapp.data.utils.convertTimestampToTime
+import com.example.cryptoapp.domain.models.MapperModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class CoinPriceInfo(
     @SerializedName("TYPE")
     @Expose
-    val type: String?,
+    override val type: String?,
     @SerializedName("MARKET")
     @Expose
-    val market: String?,
+    override val market: String?,
     @SerializedName("FROMSYMBOL")
     @Expose
-    val fromSymbol: String,
+    override val fromSymbol: String,
     @SerializedName("TOSYMBOL")
     @Expose
-    val toSymbol: String?,
+    override val toSymbol: String?,
     @SerializedName("FLAGS")
     @Expose
-    val flags: String?,
+    override val flags: String?,
     @SerializedName("PRICE")
     @Expose
-    val price: String?,
+    override val price: String?,
     @SerializedName("LASTUPDATE")
     @Expose
-    val lastUpdate: Long?,
+    override val lastUpdate: Long?,
     @SerializedName("LASTVOLUME")
     @Expose
-    val lastVolume: String?,
+    override val lastVolume: String?,
     @SerializedName("LASTVOLUMETO")
     @Expose
-    val lastVolumeTo: String?,
+    override val lastVolumeTo: String?,
     @SerializedName("LASTTRADEID")
     @Expose
-    val lastTradeId: String?,
+    override val lastTradeId: String?,
     @SerializedName("VOLUMEDAY")
     @Expose
-    val volumeDay: String?,
+    override val volumeDay: String?,
     @SerializedName("VOLUMEDAYTO")
     @Expose
-    val volumeDayTo: String?,
+    override val volumeDayTo: String?,
     @SerializedName("VOLUME24HOUR")
     @Expose
-    val volume24Hour: String?,
+    override val volume24Hour: String?,
     @SerializedName("VOLUME24HOURTO")
     @Expose
-    val volume24HourTo: String?,
+    override val volume24HourTo: String?,
     @SerializedName("OPENDAY")
     @Expose
-    val openDay: String?,
+    override val openDay: String?,
     @SerializedName("HIGHDAY")
     @Expose
-    val highDay: String?,
+    override val highDay: String?,
     @SerializedName("LOWDAY")
     @Expose
-    val lowDay: String?,
+    override val lowDay: String?,
     @SerializedName("OPEN24HOUR")
     @Expose
-    val open24Hour: String?,
+    override val open24Hour: String?,
     @SerializedName("HIGH24HOUR")
     @Expose
-    val high24Hour: String?,
+    override val high24Hour: String?,
     @SerializedName("LOW24HOUR")
     @Expose
-    val low24Hour: String?,
+    override val low24Hour: String?,
     @SerializedName("LASTMARKET")
     @Expose
-    val lastMarket: String?,
+    override val lastMarket: String?,
     @SerializedName("VOLUMEHOUR")
     @Expose
-    val volumeHour: String?,
+    override val volumeHour: String?,
     @SerializedName("VOLUMEHOURTO")
     @Expose
-    val volumeHourTo: String?,
+    override val volumeHourTo: String?,
     @SerializedName("OPENHOUR")
     @Expose
-    val openHour: String?,
+    override val openHour: String?,
     @SerializedName("HIGHHOUR")
     @Expose
-    val highHour: String?,
+    override val highHour: String?,
     @SerializedName("LOWHOUR")
     @Expose
-    val lowHour: String?,
+    override val lowHour: String?,
     @SerializedName("TOPTIERVOLUME24HOUR")
     @Expose
-    val topTierVolume24Hour: String?,
+    override val topTierVolume24Hour: String?,
     @SerializedName("TOPTIERVOLUME24HOURTO")
     @Expose
-    val topTierVolume24HourTo: String?,
+    override val topTierVolume24HourTo: String?,
     @SerializedName("CHANGE24HOUR")
     @Expose
-    val change24Hour: String?,
+    override val change24Hour: String?,
     @SerializedName("CHANGEPCT24HOUR")
     @Expose
-    val changePCT24Hour: String?,
+    override val changePCT24Hour: String?,
     @SerializedName("CHANGEDAY")
     @Expose
-    val changeDay: String?,
+    override val changeDay: String?,
     @SerializedName("CHANGEPCTDAY")
     @Expose
-    val changePCTDay: String?,
+    override val changePCTDay: String?,
     @SerializedName("SUPPLY")
     @Expose
-    val supply: String?,
+    override val supply: String?,
     @SerializedName("MKTCAP")
     @Expose
-    val mktCap: String?,
+    override val mktCap: String?,
     @SerializedName("TOTALVOLUME24H")
     @Expose
-    val totalVolume24Hour: String?,
+    override val totalVolume24Hour: String?,
     @SerializedName("TOTALVOLUME24HTO")
     @Expose
-    val totalVolume24HourTo: String?,
+    override val totalVolume24HourTo: String?,
     @SerializedName("TOTALTOPTIERVOLUME24H")
     @Expose
-    val totalTopTierVolume24Hour: String?,
+    override val totalTopTierVolume24Hour: String?,
     @SerializedName("TOTALTOPTIERVOLUME24HTO")
     @Expose
-    val totalTopTierVolume24HourTo: String?,
+    override val totalTopTierVolume24HourTo: String?,
     @SerializedName("IMAGEURL")
     @Expose
-    val imageUrl: String?
-) {
+    override val imageUrl: String?
+) : MapperModel {
     fun getFormattedTime(): String {
         return convertTimestampToTime(lastUpdate)
     }
