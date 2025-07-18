@@ -6,9 +6,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import com.example.cryptoapp.data.api.ApiFactory.getFullPriceList
 import com.example.cryptoapp.data.api.ApiFactory.getTopCoinsInfo
-import com.example.cryptoapp.data.database.DatabaseRepository
-import com.example.cryptoapp.data.mappers.mapDomainCoinInfToPRLV
-import com.example.cryptoapp.data.mappers.mapListCoinInfDomainToPRLV
+import com.example.cryptoapp.data.database.RepositoryRepository
+import com.example.cryptoapp.data.mappers.ClassNamesForMappers
+import com.example.cryptoapp.data.mappers.Mapping
+import com.example.cryptoapp.data.mappers.mapListModelLV
+import com.example.cryptoapp.data.mappers.mapListModelUIToDomain
+import com.example.cryptoapp.data.mappers.mapModelToUILV
 import com.example.cryptoapp.data.pojo.CoinPriceInfo
 import com.example.cryptoapp.data.pojo.CoinPriceInfoRawData
 import com.example.cryptoapp.domain.usecases.GetPriceInfoAboutCoinUseCase
@@ -21,14 +24,17 @@ import java.util.concurrent.TimeUnit
 
 class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val databaseRepository = DatabaseRepository(application)
+    private val databaseRepository = RepositoryRepository(application)
     private val compositeDisposable = CompositeDisposable()
 
     val priceList =
-        mapListCoinInfDomainToPRLV(GetPriceListUseCase(databaseRepository).invoke())
+        ((mapListModelLV(
+            GetPriceListUseCase(databaseRepository).invoke(),
+            ClassNamesForMappers.UI
+        )) as Mapping.UIListLV).data
 
     fun getDetailInfo(fSym: String): LiveData<CoinPriceInfo> {
-        return mapDomainCoinInfToPRLV(
+        return mapModelToUILV(
             GetPriceInfoAboutCoinUseCase(databaseRepository).invoke(
                 fSym
             )
@@ -41,7 +47,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadData() {
         val disposable = getTopCoinsInfo(limit = 50)
-            .map { it.data?.map { it.coinInfo?.name }?.joinToString(",") }
+            .map { it.data?.map { it.coinsNameDTO?.name }?.joinToString(",") }
             .flatMap { getFullPriceList(fSyms = it) }
             .map { getPriceListFromRawData(it) }
             .delaySubscription(10, TimeUnit.SECONDS)
@@ -49,7 +55,7 @@ class CoinViewModel(application: Application) : AndroidViewModel(application) {
             .retry()
             .subscribeOn(Schedulers.io())
             .subscribe({
-                InsertPriceListUseCase(databaseRepository)
+                InsertPriceListUseCase(databaseRepository).invoke(mapListModelUIToDomain(it))
                 Log.d("TEST_OF_LOADING_DATA", "Success: $it")
             }, {
                 Log.d("TEST_OF_LOADING_DATA", "Failure: ${it.message}")

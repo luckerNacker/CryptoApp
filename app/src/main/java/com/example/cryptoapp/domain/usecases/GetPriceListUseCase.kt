@@ -1,11 +1,11 @@
 package com.example.cryptoapp.domain.usecases
 
 import androidx.lifecycle.LiveData
-import com.example.cryptoapp.domain.CryptoDatabase
-import com.example.cryptoapp.domain.models.CoinInfDomain
+import com.example.cryptoapp.domain.models.CryptoRepository
+import com.example.cryptoapp.domain.models.CoinInfDomainModel
 
-class GetPriceListUseCase(private val database: CryptoDatabase) {
-    operator fun invoke(): LiveData<List<CoinInfDomain>> {
+class GetPriceListUseCase(private val database: CryptoRepository) {
+    operator fun invoke(): LiveData<List<CoinInfDomainModel>> {
         return database.getPriceList()
     }
 }

@@ -1,14 +1,8 @@
-package com.example.cryptoapp.data.database
+package com.example.cryptoapp.domain.models
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.example.cryptoapp.domain.models.MapperModel
-
-@Entity(tableName = "full_price_list")
-data class CoinInfoDatabase(
+data class CoinInfDomainModel(
     override val type: String?,
     override val market: String?,
-    @PrimaryKey
     override val fromSymbol: String,
     override val toSymbol: String?,
     override val flags: String?,
@@ -46,4 +40,4 @@ data class CoinInfoDatabase(
     override val totalTopTierVolume24Hour: String?,
     override val totalTopTierVolume24HourTo: String?,
     override val imageUrl: String?
-) : MapperModel
+): MapperModel

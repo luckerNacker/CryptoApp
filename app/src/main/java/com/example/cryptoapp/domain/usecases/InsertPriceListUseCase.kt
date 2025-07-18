@@ -1,10 +1,10 @@
 package com.example.cryptoapp.domain.usecases
 
-import com.example.cryptoapp.domain.CryptoDatabase
-import com.example.cryptoapp.domain.models.CoinInfDomain
+import com.example.cryptoapp.domain.models.CryptoRepository
+import com.example.cryptoapp.domain.models.CoinInfDomainModel
 
-class InsertPriceListUseCase(private val database: CryptoDatabase) {
-    operator fun invoke(priceList: List<CoinInfDomain>) {
+class InsertPriceListUseCase(private val database: CryptoRepository) {
+    operator fun invoke(priceList: List<CoinInfDomainModel>) {
         database.insertPriceList(priceList)
     }
 }
