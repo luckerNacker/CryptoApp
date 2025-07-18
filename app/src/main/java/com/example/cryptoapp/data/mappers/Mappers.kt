@@ -1,5 +1,6 @@
 package com.example.cryptoapp.data.mappers
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.example.cryptoapp.data.database.CoinInfoDatabase
@@ -7,9 +8,9 @@ import com.example.cryptoapp.data.pojo.CoinPriceInfo
 import com.example.cryptoapp.domain.models.MapperModel
 import com.example.cryptoapp.domain.models.CoinInfDomainModel
 
-fun mapListModelUIToDomain(coinInfoDatabase: List<MapperModel>): List<CoinInfDomainModel> {
+fun <K : MapperModel>mapListModelUIToDomain(coinInfoDatabase: List<K>): List<CoinInfDomainModel> {
     return coinInfoDatabase.map {
-        ((mapModel(it, ClassNamesForMappers.DATA)) as Mapping.DomainModel).data
+        ((mapModel(it, ClassNamesForMappers.DOMAIN)) as Mapping.DomainModel).data
     }
 }
 
@@ -44,6 +45,7 @@ fun <T : MapperModel> mapListModelLV(
 }
 
 fun mapModel(mapperModel: MapperModel, resultClass: ClassNamesForMappers): Mapping {
+    Log.d("mapModel", "$resultClass $mapperModel")
     return when (resultClass) {
         ClassNamesForMappers.UI -> Mapping.UIModel(
             data = CoinPriceInfo(

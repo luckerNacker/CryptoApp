@@ -9,4 +9,6 @@ interface CryptoRepository {
     fun getPriceInfoAboutCoin(fSym: String): LiveData<CoinInfDomainModel>
 
     fun insertPriceList(priceList: List<CoinInfDomainModel>)
+
+    suspend fun loadCoinInfoNet()
 }
